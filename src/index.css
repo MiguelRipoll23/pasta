@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --tooltip-bg: #ffffff;
+    --tooltip-border: #e5e7eb;
+    --tooltip-text: #111827;
+    color-scheme: light;
+  }
+  
+  .dark {
+    --tooltip-bg: #1f2937;
+    --tooltip-border: #374151;
+    --tooltip-text: #f3f4f6;
+    color-scheme: dark;
+  }
+  
+  .light {
+    color-scheme: light;
+  }
+
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background-color: white;
+}
+
+html.dark, html.dark body, html.dark #root {
+    background-color: rgb(17 24 39);
+}
+ 
+}
+
+
+:root {
+  /* Primary switched to green accent (emerald) */
+  --ios-primary: #10b981;
+  --ios-primary-2: #059669;
+  /* slightly softened destructive red (subtle change) */
+  --ios-destructive: #ff4d43;
+  --ios-secondary-bg: rgba(16,185,129,0.12);
+  --ios-secondary-text: #064e3b;
+  --ios-secondary-bg-dark: rgba(5,150,105,0.12);
+  --ios-shadow: 0 6px 18px rgba(2,6,23,0.08);
+}
+
+/* slightly smaller icon spacing for compact appearance */
+.btn-ios svg { display: inline-block; vertical-align: middle; }
