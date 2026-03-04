@@ -17,6 +17,7 @@ export const TextInputModal: React.FC<TextInputModalProps> = ({
   onSecondaryChange,
 }) => {
   const [value, setValue] = useState(defaultValue);
+  const canSave = value.trim().length > 0;
 
   if (!isOpen) return null;
 
@@ -35,7 +36,7 @@ export const TextInputModal: React.FC<TextInputModalProps> = ({
               disabled={isSaving}
               className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               onKeyDown={(e) => {
-                if (e.key === "Enter") onSave(value);
+                if (e.key === "Enter" && canSave && !isSaving) onSave(value);
               }}
             />
           </div>
@@ -64,7 +65,7 @@ export const TextInputModal: React.FC<TextInputModalProps> = ({
           )}
           <button
             onClick={() => onSave(value)}
-            disabled={isSaving || !value.trim()}
+            disabled={isSaving || !canSave}
             className="px-5 py-3 sm:py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-300 dark:disabled:bg-emerald-700 disabled:opacity-70 disabled:cursor-not-allowed disabled:text-white text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95 disabled:shadow-none cursor-pointer"
           >
             {isSaving ? "Saving" : "Save"}

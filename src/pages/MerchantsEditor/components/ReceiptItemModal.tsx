@@ -30,6 +30,8 @@ export const ReceiptItemModal: React.FC<ReceiptItemModalProps> = ({
 }) => {
   if (!show) return null;
 
+  const canSave = name.trim().length > 0 && unitPrice.trim().length > 0 && quantity > 0;
+
   return (
     <div className="fixed inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center p-4 z-50">
       <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
@@ -78,7 +80,7 @@ export const ReceiptItemModal: React.FC<ReceiptItemModalProps> = ({
             )}
             <button
               onClick={onSave}
-              disabled={isSaving || !name || !unitPrice}
+              disabled={isSaving || !canSave}
               className="px-5 py-3 sm:py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-300 dark:disabled:bg-emerald-700 disabled:opacity-70 disabled:cursor-not-allowed disabled:text-white text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95 disabled:shadow-none cursor-pointer"
             >
               {isSaving ? "Saving" : "Save"}

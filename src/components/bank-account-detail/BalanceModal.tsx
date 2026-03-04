@@ -13,6 +13,7 @@ export const BalanceModal: React.FC<BalanceModalProps> = ({
   onSave,
 }) => {
   if (!show) return null;
+  const canSave = formBalanceAmount.trim().length > 0 && formBalanceCurrency.trim().length > 0;
 
   return (
     <div className="fixed inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center p-4 z-50">
@@ -54,7 +55,7 @@ export const BalanceModal: React.FC<BalanceModalProps> = ({
             )}
             <button
               onClick={onSave}
-              disabled={isSavingBalance || !formBalanceAmount}
+              disabled={isSavingBalance || !canSave}
               className="px-5 py-3 sm:py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-300 dark:disabled:bg-emerald-700 disabled:opacity-70 disabled:cursor-not-allowed disabled:text-white text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95 disabled:shadow-none cursor-pointer"
             >
               {isSavingBalance ? "Saving..." : "Save"}
