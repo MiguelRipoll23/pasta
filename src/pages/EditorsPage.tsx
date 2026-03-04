@@ -92,7 +92,15 @@ export const EditorsPage: React.FC = () => {
                     )}>
                       {tab.icon}
                     </span>
-                    {tab.label}
+                    <span className="flex items-center gap-2">
+                      {tab.label}
+                      {isSavingChanges && isActive && (
+                        <span className="rounded-full border px-2 py-0.5 text-[10px] font-medium flex items-center gap-1 text-amber-700 dark:text-amber-300 bg-amber-50/95 dark:bg-amber-900/60 border-amber-200 dark:border-amber-800">
+                          <Loader2 size={10} className="animate-spin" />
+                          Saving
+                        </span>
+                      )}
+                    </span>
                   </>
                 )}
               </NavLink>
@@ -119,6 +127,12 @@ export const EditorsPage: React.FC = () => {
           <span className="text-sm font-medium text-gray-900 dark:text-white">
             {currentTab?.label || 'Select Editor'}
           </span>
+          {isSavingChanges && currentTab && (
+            <span className="rounded-full border px-2 py-0.5 text-[10px] font-medium flex items-center gap-1 text-amber-700 dark:text-amber-300 bg-amber-50/95 dark:bg-amber-900/60 border-amber-200 dark:border-amber-800">
+              <Loader2 size={10} className="animate-spin" />
+              Saving
+            </span>
+          )}
           <ChevronUp 
             size={14} 
             className={clsx(
@@ -128,24 +142,6 @@ export const EditorsPage: React.FC = () => {
           />
         </button>
       </div>
-
-      <div className="md:hidden fixed left-1/2 -translate-x-1/2 z-[60]" style={{ bottom: '156px' }}>
-        {isSavingChanges && (
-          <div className="rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur flex items-center gap-1.5 shadow-sm text-amber-700 dark:text-amber-300 bg-amber-50/95 dark:bg-amber-900/60 border-amber-200 dark:border-amber-800">
-            <Loader2 size={12} className="animate-spin" />
-            <span>Saving changes...</span>
-          </div>
-        )}
-      </div>
-
-      {isSavingChanges && (
-        <div className="max-md:hidden fixed left-1/2 -translate-x-1/2 z-[60]" style={{ bottom: '24px' }}>
-          <div className="rounded-full border px-4 py-2 text-sm font-medium backdrop-blur flex items-center gap-2 shadow-lg text-amber-700 dark:text-amber-300 bg-amber-50/95 dark:bg-amber-900/60 border-amber-200 dark:border-amber-800">
-            <Loader2 size={14} className="animate-spin" />
-            <span>Saving changes...</span>
-          </div>
-        </div>
-      )}
 
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
@@ -197,7 +193,15 @@ export const EditorsPage: React.FC = () => {
                         )}>
                           {tab.icon}
                         </span>
-                        {tab.label}
+                        <span className="flex items-center gap-2">
+                          {tab.label}
+                          {isSavingChanges && isActive && (
+                            <span className="rounded-full border px-2 py-0.5 text-[10px] font-medium flex items-center gap-1 text-amber-700 dark:text-amber-300 bg-amber-50/95 dark:bg-amber-900/60 border-amber-200 dark:border-amber-800">
+                              <Loader2 size={10} className="animate-spin" />
+                              Saving
+                            </span>
+                          )}
+                        </span>
                       </>
                     )}
                   </NavLink>
