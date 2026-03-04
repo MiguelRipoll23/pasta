@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { clsx } from "clsx";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Wallet, Building2, Banknote, TrendingUp, PieChart, ChevronUp, X, Settings, Store, RefreshCw, FileText } from "lucide-react";
+import { Wallet, Building2, Banknote, TrendingUp, PieChart, ChevronUp, X, Settings, Store, RefreshCw, FileText, Loader2 } from "lucide-react";
+import { useIsMutating } from "@tanstack/react-query";
 
 const slideUpAnimation = `
   @keyframes slideUp {
@@ -29,6 +30,8 @@ const tabs = [
 export const EditorsPage: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const activeMutations = useIsMutating();
+  const isSavingChanges = activeMutations > 0;
 
   const getCurrentTab = () => {
     const pathParts = location.pathname.split('/');
@@ -64,6 +67,17 @@ export const EditorsPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
             Editors
           </h1>
+          <div
+            className={clsx(
+              "mb-4 rounded-lg border px-3 py-2 text-xs font-medium flex items-center gap-2 transition-colors",
+              isSavingChanges
+                ? "text-amber-700 dark:text-amber-300 bg-amber-50/90 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800"
+                : "text-emerald-700 dark:text-emerald-300 bg-emerald-50/90 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800"
+            )}
+          >
+            {isSavingChanges && <Loader2 size={14} className="animate-spin" />}
+            <span>{isSavingChanges ? "Saving changes..." : "All changes saved"}</span>
+          </div>
           <nav className="space-y-1">
             {tabs.map((tab) => (
               <NavLink
@@ -124,6 +138,20 @@ export const EditorsPage: React.FC = () => {
             )} 
           />
         </button>
+      </div>
+
+      <div className="md:hidden fixed left-1/2 -translate-x-1/2 z-[60]" style={{ bottom: '156px' }}>
+        <div
+          className={clsx(
+            "rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur flex items-center gap-1.5 shadow-sm",
+            isSavingChanges
+              ? "text-amber-700 dark:text-amber-300 bg-amber-50/95 dark:bg-amber-900/60 border-amber-200 dark:border-amber-800"
+              : "text-emerald-700 dark:text-emerald-300 bg-emerald-50/95 dark:bg-emerald-900/60 border-emerald-200 dark:border-emerald-800"
+          )}
+        >
+          {isSavingChanges && <Loader2 size={12} className="animate-spin" />}
+          <span>{isSavingChanges ? "Saving changes..." : "Saved"}</span>
+        </div>
       </div>
 
       {/* Mobile Menu Overlay */}
