@@ -47,7 +47,8 @@ export const SubscriptionsEditor: React.FC = () => {
     autoCalcEnabled,
   } = useSubscriptionsEditor();
 
-  const { data: bankAccounts = [] } = useBankAccounts();
+  const { data: allBankAccounts = [] } = useBankAccounts();
+  const checkingAccounts = allBankAccounts.filter((a: { id: number; name: string; type: string }) => a.type === "checking");
 
   const calculateMonthlyTotal = () => {
     return subscriptions.reduce((total, sub) => {
@@ -276,7 +277,7 @@ export const SubscriptionsEditor: React.FC = () => {
                     className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                   >
                     <option value="">None</option>
-                    {bankAccounts.map((account: { id: number; name: string }) => (
+                    {checkingAccounts.map((account: { id: number; name: string; type: string }) => (
                       <option key={account.id} value={account.id}>{account.name}</option>
                     ))}
                   </select>

@@ -4,7 +4,6 @@ export interface Bill {
   category: string;
   totalAmount: string;
   currencyCode: string;
-  senderEmail?: string | null;
   recurrence?: string | null;
   updatedAt: string;
 }

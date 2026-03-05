@@ -25,7 +25,8 @@ export const SettingsPage: React.FC = () => {
   const [passkeySuccess, setPasskeySuccess] = useState(false);
   const [showPasskeyModal, setShowPasskeyModal] = useState(false);
 
-  const { data: bankAccounts = [] } = useBankAccounts();
+  const { data: allBankAccounts = [] } = useBankAccounts();
+  const checkingAccounts = allBankAccounts.filter((a: { id: number; name: string; type: string }) => a.type === "checking");
   const { data: serverSettings } = useServerSettings();
   const invalidate = useInvalidateQueries();
 
@@ -167,7 +168,7 @@ export const SettingsPage: React.FC = () => {
                 className="max-w-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-gray-900 dark:text-white disabled:opacity-50"
               >
                 <option value="">None</option>
-                {bankAccounts.map((account: { id: number; name: string }) => (
+                {checkingAccounts.map((account: { id: number; name: string; type: string }) => (
                   <option key={account.id} value={account.id}>{account.name}</option>
                 ))}
               </select>

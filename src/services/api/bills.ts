@@ -15,7 +15,6 @@ export const saveBill = async (data: {
   category: string;
   totalAmount: string;
   currencyCode: string;
-  senderEmail?: string;
   recurrence?: string;
   bankAccountId?: number | null;
 }) => {
@@ -30,7 +29,6 @@ export const updateBill = async (
     category: string;
     totalAmount: string;
     currencyCode: string;
-    senderEmail?: string;
     recurrence?: string;
     bankAccountId?: number | null;
   },

@@ -28,7 +28,8 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ initialData, merchantId, rece
   const navigate = useNavigate();
   const invalidate = useInvalidateQueries();
   const { data: serverSettings } = useServerSettings();
-  const { data: bankAccounts = [] } = useBankAccounts();
+  const { data: allBankAccounts = [] } = useBankAccounts();
+  const checkingAccounts = allBankAccounts.filter((a: { id: number; name: string; type: string }) => a.type === "checking");
 
   const autoCalcEnabled = !!(serverSettings?.autoCalculateBalance && serverSettings?.defaultCheckingAccountId);
   const defaultBankAccountId = serverSettings?.defaultCheckingAccountId ?? null;
@@ -179,7 +180,7 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ initialData, merchantId, rece
                 className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
               >
                 <option value="">None</option>
-                {bankAccounts.map((account: { id: number; name: string }) => (
+                {checkingAccounts.map((account: { id: number; name: string; type: string }) => (
                   <option key={account.id} value={account.id}>{account.name}</option>
                 ))}
               </select>

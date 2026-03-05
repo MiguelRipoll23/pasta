@@ -39,8 +39,6 @@ export const BillsEditor: React.FC = () => {
     setFormAmount,
     formCurrency,
     setFormCurrency,
-    formSenderEmail,
-    setFormSenderEmail,
     formRecurrence,
     setFormRecurrence,
     formBankAccountId,
@@ -48,7 +46,8 @@ export const BillsEditor: React.FC = () => {
     autoCalcEnabled,
   } = useBillsEditor();
 
-  const { data: bankAccounts = [] } = useBankAccounts();
+  const { data: allBankAccounts = [] } = useBankAccounts();
+  const checkingAccounts = allBankAccounts.filter((a: { id: number; name: string; type: string }) => a.type === "checking");
 
   const calculateMonthlyTotal = () => {
     const now = new Date();
@@ -176,16 +175,6 @@ export const BillsEditor: React.FC = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Sender Email</label>
-                <input
-                  type="email"
-                  value={formSenderEmail}
-                  onChange={(e) => setFormSenderEmail(e.target.value)}
-                  placeholder="e.g., info@company.com"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                />
-              </div>
-              <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Recurring</label>
                 <select
                   value={formRecurrence}
@@ -208,7 +197,7 @@ export const BillsEditor: React.FC = () => {
                     className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
                   >
                     <option value="">None</option>
-                    {bankAccounts.map((account: { id: number; name: string }) => (
+                    {checkingAccounts.map((account: { id: number; name: string; type: string }) => (
                       <option key={account.id} value={account.id}>{account.name}</option>
                     ))}
                   </select>

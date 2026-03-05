@@ -10,7 +10,6 @@ interface BillInput {
   category: string;
   totalAmount: string;
   currencyCode: string;
-  senderEmail?: string;
   recurrence?: string;
   bankAccountId?: number | null;
 }
@@ -58,7 +57,6 @@ export function useBillsEditor() {
   const [formCategory, setFormCategory] = useState("");
   const [formAmount, setFormAmount] = useState("");
   const [formCurrency, setFormCurrency] = useState(getDefaultCurrencyCode());
-  const [formSenderEmail, setFormSenderEmail] = useState("");
   const [formRecurrence, setFormRecurrence] = useState<string>("");
   const [formBankAccountId, setFormBankAccountId] = useState<number | null>(null);
 
@@ -68,7 +66,6 @@ export function useBillsEditor() {
     setFormCategory(categories.length > 0 ? categories[0].name : "");
     setFormAmount("");
     setFormCurrency(getDefaultCurrencyCode());
-    setFormSenderEmail("");
     setFormRecurrence("");
     setFormBankAccountId(autoCalcEnabled ? defaultBankAccountId : null);
     setShowModal(true);
@@ -80,7 +77,6 @@ export function useBillsEditor() {
     setFormCategory(bill.category);
     setFormAmount(bill.totalAmount);
     setFormCurrency(bill.currencyCode);
-    setFormSenderEmail(bill.senderEmail || "");
     setFormRecurrence(bill.recurrence || "");
     setFormBankAccountId((bill as Bill & { bankAccountId?: number | null }).bankAccountId ?? (autoCalcEnabled ? defaultBankAccountId : null));
     setShowModal(true);
@@ -117,7 +113,6 @@ export function useBillsEditor() {
       category: formCategory,
       totalAmount: formAmount,
       currencyCode: formCurrency,
-      senderEmail: formSenderEmail || undefined,
       recurrence: formRecurrence || undefined,
       bankAccountId: formBankAccountId ?? undefined,
     };
@@ -163,8 +158,6 @@ export function useBillsEditor() {
     setFormAmount,
     formCurrency,
     setFormCurrency,
-    formSenderEmail,
-    setFormSenderEmail,
     formRecurrence,
     setFormRecurrence,
     formBankAccountId,
