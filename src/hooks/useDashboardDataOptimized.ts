@@ -37,17 +37,17 @@ export function useDashboardDataOptimized() {
   // Map server KPIs response → KpiData interface used by DashboardPage
   const kpis: KpiData | null = kpisData
     ? {
-        liquidMoney: kpisData.liquidMoney,
-        investedMoney: kpisData.investedMoney,
-        totalInvestedCost: kpisData.totalInvestedCost,
+        liquidMoney: parseFloat(kpisData.liquidMoney),
+        investedMoney: parseFloat(kpisData.investedMoney),
+        totalInvestedCost: parseFloat(kpisData.totalInvestedCost),
         monthlyExpenses:
-          kpisData.monthlyBills +
-          kpisData.monthlyReceipts +
-          kpisData.monthlySubscriptions,
-        monthlyInterestIncome: kpisData.monthlyInterestIncome,
-        monthlyBills: kpisData.monthlyBills,
-        monthlyReceipts: kpisData.monthlyReceipts,
-        monthlySubscriptions: kpisData.monthlySubscriptions,
+          parseFloat(kpisData.monthlyBills) +
+          parseFloat(kpisData.monthlyReceipts) +
+          parseFloat(kpisData.monthlySubscriptions),
+        monthlyInterestIncome: parseFloat(kpisData.monthlyInterestIncome),
+        monthlyBills: parseFloat(kpisData.monthlyBills),
+        monthlyReceipts: parseFloat(kpisData.monthlyReceipts),
+        monthlySubscriptions: parseFloat(kpisData.monthlySubscriptions),
         currencyCode: kpisData.currencyCode,
       }
     : null;
@@ -61,21 +61,44 @@ export function useDashboardDataOptimized() {
     monthlyExpensesData &&
     listsData
       ? {
-          portfolio: portfolioData.portfolio,
-          liquidFlow: moneyFlowData.liquidFlow,
-          liquidFlowSummary: moneyFlowData.liquidFlowSummary,
-          netWorth: netWorthData.netWorth,
+          portfolio: portfolioData.portfolio.map((item) => ({
+            name: item.name,
+            value: parseFloat(item.value),
+          })),
+          liquidFlow: {
+            nodes: moneyFlowData.liquidFlow.nodes,
+            links: moneyFlowData.liquidFlow.links.map((link) => ({
+              ...link,
+              value: parseFloat(link.value),
+            })),
+          },
+          liquidFlowSummary: {
+            gained: parseFloat(moneyFlowData.liquidFlowSummary.gained),
+            lost: parseFloat(moneyFlowData.liquidFlowSummary.lost),
+            netChange: parseFloat(moneyFlowData.liquidFlowSummary.netChange),
+          },
+          netWorth: netWorthData.netWorth.map((point) => ({
+            date: point.date,
+            value: point.value !== undefined ? parseFloat(point.value) : undefined,
+            projection: point.projection !== undefined ? parseFloat(point.projection) : undefined,
+          })),
           bills: monthlyExpensesData.bills,
           billCategories: monthlyExpensesData.billCategories,
           billCategoryColors: monthlyExpensesData.billCategoryColors,
           // Convert string[] → Set<string> for compatibility with BillsHistoryCard
           favoritedBillCategories: new Set(monthlyExpensesData.favoritedBillCategories),
-          receipts: listsData.receipts,
-          totalReceipts: listsData.totalReceipts,
-          subscriptions: listsData.subscriptions,
-          totalSubscriptions: listsData.totalSubscriptions,
+          receipts: listsData.receipts.map((item) => ({
+            name: item.name,
+            total: parseFloat(item.total),
+          })),
+          totalReceipts: parseFloat(listsData.totalReceipts),
+          subscriptions: listsData.subscriptions.map((item) => ({
+            name: item.name,
+            total: parseFloat(item.total),
+          })),
+          totalSubscriptions: parseFloat(listsData.totalSubscriptions),
         }
-      : null;
+    : null;
 
   return {
     kpis,
