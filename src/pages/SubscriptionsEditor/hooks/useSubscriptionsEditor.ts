@@ -23,7 +23,6 @@ export function useSubscriptionsEditor() {
   const invalidate = useInvalidateQueries();
   const { data: serverSettings } = useServerSettings();
 
-  const autoCalcEnabled = !!(serverSettings?.autoCalculateBalance && serverSettings?.defaultCheckingAccountId);
   const defaultBankAccountId = serverSettings?.defaultCheckingAccountId ?? null;
 
   const createMutation = useMutation<Subscription, unknown, SubscriptionInput>({

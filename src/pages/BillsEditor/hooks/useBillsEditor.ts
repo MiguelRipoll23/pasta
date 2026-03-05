@@ -30,7 +30,6 @@ export function useBillsEditor() {
   const { data: serverSettings } = useServerSettings();
   const invalidate = useInvalidateQueries();
 
-  const autoCalcEnabled = !!(serverSettings?.autoCalculateBalance && serverSettings?.defaultCheckingAccountId);
   const defaultBankAccountId = serverSettings?.defaultCheckingAccountId ?? null;
 
   const saveMutation = useMutation<Bill, unknown, BillInput>({
