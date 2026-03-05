@@ -137,12 +137,24 @@ export const SettingsPage: React.FC = () => {
 
       <div className="space-y-10 max-w-lg">
 
-        {/* Banking */}
+        {/* General */}
         <section>
           <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-5">
-            Banking
+            General
           </h4>
           <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-900 dark:text-white">Default Currency</label>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                Pre-filled currency when creating new entries.
+              </p>
+              <div style={{ maxWidth: 180 }}>
+                <CurrencySelect
+                  value={settings.defaultCurrency || ""}
+                  onChange={(v) => setSettings((prev) => ({ ...prev, defaultCurrency: v }))}
+                />
+              </div>
+            </div>
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-900 dark:text-white">Default Checking Account</label>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
@@ -189,25 +201,6 @@ export const SettingsPage: React.FC = () => {
                 <Loader2 className="w-3 h-3 animate-spin" /> Saving...
               </p>
             )}
-          </div>
-        </section>
-
-        {/* General */}
-        <section>
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-5">
-            General
-          </h4>
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-900 dark:text-white">Default Currency</label>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-              Pre-filled currency when creating new entries.
-            </p>
-            <div style={{ maxWidth: 180 }}>
-              <CurrencySelect
-                value={settings.defaultCurrency || ""}
-                onChange={(v) => setSettings((prev) => ({ ...prev, defaultCurrency: v }))}
-              />
-            </div>
           </div>
         </section>
 
