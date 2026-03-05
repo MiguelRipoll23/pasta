@@ -10,6 +10,7 @@ import { clsx } from "clsx";
 import type { BillCategory } from "../../interfaces/bill-category-interface";
 import { DeleteConfirmModal } from "../../components/common/DeleteConfirmModal";
 import { CurrencySelect } from "../../components/common/CurrencySelect";
+import { useBankAccounts } from "../../hooks/useFinanceData";
 
 export const BillsEditor: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"history" | "categories">("history");
@@ -40,7 +41,14 @@ export const BillsEditor: React.FC = () => {
     setFormCurrency,
     formSenderEmail,
     setFormSenderEmail,
+    formRecurrence,
+    setFormRecurrence,
+    formBankAccountId,
+    setFormBankAccountId,
+    autoCalcEnabled,
   } = useBillsEditor();
+
+  const { data: bankAccounts = [] } = useBankAccounts();
 
   const calculateMonthlyTotal = () => {
     const now = new Date();
@@ -177,6 +185,35 @@ export const BillsEditor: React.FC = () => {
                   className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
                 />
               </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Recurring</label>
+                <select
+                  value={formRecurrence}
+                  onChange={(e) => setFormRecurrence(e.target.value)}
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                >
+                  <option value="">One-time (no recurrence)</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+              {autoCalcEnabled && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Checking Account</label>
+                  <select
+                    value={formBankAccountId ?? ""}
+                    onChange={(e) => setFormBankAccountId(e.target.value === "" ? null : Number(e.target.value))}
+                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                  >
+                    <option value="">None</option>
+                    {bankAccounts.map((account: { id: number; name: string }) => (
+                      <option key={account.id} value={account.id}>{account.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div className="flex gap-3 justify-end mt-8">
                 <button onClick={() => setShowModal(false)} className="px-5 py-3 sm:py-2.5 text-gray-500 font-medium hover:bg-gray-100 rounded-xl">Cancel</button>
                 <button

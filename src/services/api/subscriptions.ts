@@ -19,6 +19,7 @@ export const createSubscription = async (data: {
   effectiveFrom: string;
   effectiveUntil?: string | null;
   plan?: string | null;
+  bankAccountId?: number | null;
 }) => {
   const response = await api.post("/api/v1/subscriptions", data);
   return response.data;
@@ -35,6 +36,7 @@ export const updateSubscription = async (
     effectiveFrom: string;
     effectiveUntil?: string | null;
     plan?: string | null;
+    bankAccountId?: number | null;
   },
 ) => {
   const response = await api.patch(`/api/v1/subscriptions/${id}`, data);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useInfiniteBills, useInvalidateQueries, useBillCategories } from "../../../hooks/useFinanceData";
+import { useInfiniteBills, useInvalidateQueries, useBillCategories, useServerSettings } from "../../../hooks/useFinanceData";
 import { saveBill, updateBill, deleteBill } from "../../../services/api/bills";
 import type { Bill } from "../../../interfaces/bill-interface";
 import { getDefaultCurrencyCode } from "../../../constants/currency-constants";
@@ -11,6 +11,8 @@ interface BillInput {
   totalAmount: string;
   currencyCode: string;
   senderEmail?: string;
+  recurrence?: string;
+  bankAccountId?: number | null;
 }
 
 export function useBillsEditor() {
@@ -25,7 +27,11 @@ export function useBillsEditor() {
   
   const bills = billsData?.pages.flatMap(page => page.results) || [] as Bill[];
   const { data: categories = [] } = useBillCategories();
+  const { data: serverSettings } = useServerSettings();
   const invalidate = useInvalidateQueries();
+
+  const autoCalcEnabled = !!(serverSettings?.autoCalculateBalance && serverSettings?.defaultCheckingAccountId);
+  const defaultBankAccountId = serverSettings?.defaultCheckingAccountId ?? null;
 
   const saveMutation = useMutation<Bill, unknown, BillInput>({
     mutationFn: (data) => saveBill(data),
@@ -53,6 +59,8 @@ export function useBillsEditor() {
   const [formAmount, setFormAmount] = useState("");
   const [formCurrency, setFormCurrency] = useState(getDefaultCurrencyCode());
   const [formSenderEmail, setFormSenderEmail] = useState("");
+  const [formRecurrence, setFormRecurrence] = useState<string>("");
+  const [formBankAccountId, setFormBankAccountId] = useState<number | null>(null);
 
   const handleCreate = () => {
     setEditingBill(null);
@@ -61,6 +69,8 @@ export function useBillsEditor() {
     setFormAmount("");
     setFormCurrency(getDefaultCurrencyCode());
     setFormSenderEmail("");
+    setFormRecurrence("");
+    setFormBankAccountId(autoCalcEnabled ? defaultBankAccountId : null);
     setShowModal(true);
   };
 
@@ -71,6 +81,8 @@ export function useBillsEditor() {
     setFormAmount(bill.totalAmount);
     setFormCurrency(bill.currencyCode);
     setFormSenderEmail(bill.senderEmail || "");
+    setFormRecurrence(bill.recurrence || "");
+    setFormBankAccountId((bill as Bill & { bankAccountId?: number | null }).bankAccountId ?? (autoCalcEnabled ? defaultBankAccountId : null));
     setShowModal(true);
   };
 
@@ -106,6 +118,8 @@ export function useBillsEditor() {
       totalAmount: formAmount,
       currencyCode: formCurrency,
       senderEmail: formSenderEmail || undefined,
+      recurrence: formRecurrence || undefined,
+      bankAccountId: formBankAccountId ?? undefined,
     };
 
     if (editingBill) {
@@ -151,6 +165,12 @@ export function useBillsEditor() {
     setFormCurrency,
     formSenderEmail,
     setFormSenderEmail,
+    formRecurrence,
+    setFormRecurrence,
+    formBankAccountId,
+    setFormBankAccountId,
+    autoCalcEnabled,
+    defaultBankAccountId,
   };
 }
 

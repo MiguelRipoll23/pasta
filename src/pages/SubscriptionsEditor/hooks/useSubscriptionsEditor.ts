@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useSubscriptions, useInvalidateQueries } from "../../../hooks/useFinanceData";
+import { useSubscriptions, useInvalidateQueries, useServerSettings } from "../../../hooks/useFinanceData";
 import { createSubscription, updateSubscription, deleteSubscription } from "../../../services/api/subscriptions";
 import type { Subscription } from "../../../interfaces/subscription-interface";
 import { getDefaultCurrencyCode } from "../../../constants/currency-constants";
@@ -14,12 +14,17 @@ interface SubscriptionInput {
   effectiveFrom: string;
   effectiveUntil?: string | null;
   plan?: string | null;
+  bankAccountId?: number | null;
 }
 
 export function useSubscriptionsEditor() {
   const { data: subscriptionsData = [], isLoading: loading, error } = useSubscriptions();
   const subscriptions = (subscriptionsData || []) as Subscription[];
   const invalidate = useInvalidateQueries();
+  const { data: serverSettings } = useServerSettings();
+
+  const autoCalcEnabled = !!(serverSettings?.autoCalculateBalance && serverSettings?.defaultCheckingAccountId);
+  const defaultBankAccountId = serverSettings?.defaultCheckingAccountId ?? null;
 
   const createMutation = useMutation<Subscription, unknown, SubscriptionInput>({
     mutationFn: (data) => createSubscription(data),
@@ -50,6 +55,7 @@ export function useSubscriptionsEditor() {
   const [formEffectiveFrom, setFormEffectiveFrom] = useState(new Date().toISOString().split('T')[0]);
   const [formEffectiveUntil, setFormEffectiveUntil] = useState<string>("");
   const [formPlan, setFormPlan] = useState("");
+  const [formBankAccountId, setFormBankAccountId] = useState<number | null>(null);
 
   const [availableCurrencies] = useState<string[]>(["USD", "EUR", "GBP"]);
 
@@ -62,6 +68,7 @@ export function useSubscriptionsEditor() {
     setFormCurrency(getDefaultCurrencyCode());    setFormEffectiveFrom(new Date().toISOString().split('T')[0]);
     setFormEffectiveUntil("");
     setFormPlan("");
+    setFormBankAccountId(autoCalcEnabled ? defaultBankAccountId : null);
     setShowModal(true);
   };
 
@@ -75,6 +82,7 @@ export function useSubscriptionsEditor() {
     setFormEffectiveFrom(sub.effectiveFrom.split('T')[0]);
     setFormEffectiveUntil(sub.effectiveUntil?.split('T')[0] || "");
     setFormPlan(sub.plan || "");
+    setFormBankAccountId((sub as Subscription & { bankAccountId?: number | null }).bankAccountId ?? (autoCalcEnabled ? defaultBankAccountId : null));
     setShowModal(true);
   };
 
@@ -113,6 +121,7 @@ export function useSubscriptionsEditor() {
       effectiveFrom: formEffectiveFrom,
       effectiveUntil: formEffectiveUntil || null,
       plan: formPlan || null,
+      bankAccountId: formBankAccountId ?? undefined,
     };
 
     if (editingSubscription) {
@@ -160,6 +169,9 @@ export function useSubscriptionsEditor() {
     setFormEffectiveUntil,
     formPlan,
     setFormPlan,
+    formBankAccountId,
+    setFormBankAccountId,
+    autoCalcEnabled,
     availableCurrencies,
   };
 }

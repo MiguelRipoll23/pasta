@@ -16,6 +16,8 @@ export const saveBill = async (data: {
   totalAmount: string;
   currencyCode: string;
   senderEmail?: string;
+  recurrence?: string;
+  bankAccountId?: number | null;
 }) => {
   const response = await api.post("/api/v1/bills/save", data);
   return response.data;
@@ -29,6 +31,8 @@ export const updateBill = async (
     totalAmount: string;
     currencyCode: string;
     senderEmail?: string;
+    recurrence?: string;
+    bankAccountId?: number | null;
   },
 ) => {
   const response = await api.patch(`/api/v1/bills/${id}`, data);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Save, Trash2, Plus, ShoppingBag, Edit2 } from "lucide-react";
-import { useMerchantReceipts, useInvalidateQueries } from "../../hooks/useFinanceData";
+import { useMerchantReceipts, useInvalidateQueries, useServerSettings, useBankAccounts } from "../../hooks/useFinanceData";
 import { createReceipt, updateReceipt, deleteReceipt, updateReceiptItems } from "../../services/api/merchants";
 import { useMutation } from "@tanstack/react-query";
 import { formatCurrencyWithAlignment } from "../../utils/currency-utils";
@@ -17,6 +17,7 @@ interface ReceiptFormProps {
     date: string;
     currency: string;
     items: ReceiptItem[];
+    bankAccountId?: number | null;
   };
   merchantId: number;
   receiptId?: number;
@@ -26,9 +27,18 @@ interface ReceiptFormProps {
 const ReceiptForm: React.FC<ReceiptFormProps> = ({ initialData, merchantId, receiptId, isNew }) => {
   const navigate = useNavigate();
   const invalidate = useInvalidateQueries();
+  const { data: serverSettings } = useServerSettings();
+  const { data: bankAccounts = [] } = useBankAccounts();
+
+  const autoCalcEnabled = !!(serverSettings?.autoCalculateBalance && serverSettings?.defaultCheckingAccountId);
+  const defaultBankAccountId = serverSettings?.defaultCheckingAccountId ?? null;
+
   const [date, setDate] = useState(initialData.date);
   const [currency, setCurrency] = useState(initialData.currency);
   const [items, setItems] = useState<ReceiptItem[]>(initialData.items);
+  const [bankAccountId, setBankAccountId] = useState<number | null>(
+    initialData.bankAccountId ?? (autoCalcEnabled ? defaultBankAccountId : null)
+  );
 
   const calculatedTotal = items.reduce((acc, item) => acc + parseFloat(item.unitPrice) * item.quantity, 0);
 
@@ -36,9 +46,9 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ initialData, merchantId, rece
     mutationFn: async () => {
       const totalAmountStr = calculatedTotal.toFixed(2);
       if (isNew) {
-        return createReceipt(merchantId, date, totalAmountStr, currency);
+        return createReceipt(merchantId, date, totalAmountStr, currency, bankAccountId);
       } else {
-        await updateReceipt(receiptId!, date, totalAmountStr, currency);
+        await updateReceipt(receiptId!, date, totalAmountStr, currency, bankAccountId);
         return updateReceiptItems(receiptId!, items);
       }
     },
@@ -159,6 +169,23 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ initialData, merchantId, rece
             />
           </div>
         </div>
+        {autoCalcEnabled && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Checking Account</label>
+              <select
+                value={bankAccountId ?? ""}
+                onChange={(e) => setBankAccountId(e.target.value === "" ? null : Number(e.target.value))}
+                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
+              >
+                <option value="">None</option>
+                {bankAccounts.map((account: { id: number; name: string }) => (
+                  <option key={account.id} value={account.id}>{account.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="border-t border-gray-100 dark:border-gray-800 pt-8">
@@ -256,6 +283,7 @@ export const ReceiptDetailEditor: React.FC = () => {
     date: receipt && !isNew ? (receipt.receiptDate || receipt.date).split('T')[0] : new Date().toISOString().split('T')[0],
     currency: receipt && !isNew ? receipt.currencyCode : getDefaultCurrencyCode(),
     items: receipt && !isNew ? receipt.items || [] : [],
+    bankAccountId: receipt && !isNew ? (receipt as Receipt & { bankAccountId?: number | null }).bankAccountId ?? null : null,
   };
 
   return (
