@@ -51,6 +51,13 @@ export const queryKeys = {
     roboadvisorId ? ['roboadvisorFunds', roboadvisorId] : ['roboadvisorFunds'] as const,
 
   chatModels: ['chatModels'] as const,
+
+  dashboardKpis: ['dashboard', 'kpis'] as const,
+  dashboardNetWorth: ['dashboard', 'netWorth'] as const,
+  dashboardPortfolio: ['dashboard', 'portfolio'] as const,
+  dashboardMoneyFlow: ['dashboard', 'moneyFlow'] as const,
+  dashboardMonthlyExpenses: ['dashboard', 'monthlyExpenses'] as const,
+  dashboardLists: ['dashboard', 'lists'] as const,
 };
 
 // Bank Accounts Hooks
@@ -308,6 +315,13 @@ export function useInvalidateQueries() {
       queryClient.invalidateQueries({ queryKey: queryKeys.billCategories });
       queryClient.invalidateQueries({ queryKey: queryKeys.roboadvisors });
       queryClient.invalidateQueries({ queryKey: queryKeys.roboadvisorBalances() });
+      // Invalidate aggregated dashboard endpoints
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboardKpis });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboardNetWorth });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboardPortfolio });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboardMoneyFlow });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboardMonthlyExpenses });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboardLists });
     },
   };
 }

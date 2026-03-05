@@ -29,10 +29,11 @@ const DashboardPage: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      // Every time user leaves the dashboard view, invalidate cache used for kpis/charts
+      // Invalidate dashboard cache when leaving, so next visit fetches fresh data
       invalidateDashboardData();
     };
-  }, [invalidateDashboardData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [visibleBillCategories, setVisibleBillCategories] = useState<Set<string>>(new Set());
   const [showTrends, setShowTrends] = useState(true);
