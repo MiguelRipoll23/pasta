@@ -92,9 +92,12 @@ export const BillsHistoryTab: React.FC<BillsHistoryTabProps> = ({
                           <p className="font-bold text-gray-900 dark:text-white leading-none">
                             {formatDate(bill.date)}
                           </p>
-                          <p 
-                            className="text-xs text-gray-500 dark:text-gray-400"
-                          >
+                          {bill.name && bill.name !== "Unnamed" && (
+                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                              {bill.name}
+                            </p>
+                          )}
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
                             {bill.category.replace(/_/g, " ").charAt(0).toUpperCase() + bill.category.replace(/_/g, " ").slice(1).toLowerCase()}
                           </p>
                         </div>
