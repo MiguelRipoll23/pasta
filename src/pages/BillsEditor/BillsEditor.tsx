@@ -130,9 +130,9 @@ export const BillsEditor: React.FC = () => {
       {/* Bill Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 w-full max-w-md lg:max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-200">
             <h4 className="text-xl font-bold mb-6">{editingBill ? "Edit" : "Add"} Bill</h4>
-            <div className="space-y-4">
+            <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Name <span className="text-red-500">*</span></label>
                 <input
