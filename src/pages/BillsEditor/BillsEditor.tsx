@@ -33,6 +33,8 @@ export const BillsEditor: React.FC = () => {
     cancelDelete,
     formDate,
     setFormDate,
+    formName,
+    setFormName,
     formCategory,
     setFormCategory,
     formAmount,
@@ -43,7 +45,6 @@ export const BillsEditor: React.FC = () => {
     setFormRecurrence,
     formBankAccountId,
     setFormBankAccountId,
-    autoCalcEnabled,
   } = useBillsEditor();
 
   const { data: allBankAccounts = [] } = useBankAccounts();
@@ -133,6 +134,16 @@ export const BillsEditor: React.FC = () => {
             <h4 className="text-xl font-bold mb-6">{editingBill ? "Edit" : "Add"} Bill</h4>
             <div className="space-y-4">
               <div>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Name <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="e.g., Electricity bill"
+                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+              </div>
+              <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Date <span className="text-red-500">*</span></label>
                 <input
                   type="date"
@@ -188,7 +199,7 @@ export const BillsEditor: React.FC = () => {
                   <option value="yearly">Yearly</option>
                 </select>
               </div>
-              {autoCalcEnabled && (
+              {checkingAccounts.length > 0 && (
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Checking Account</label>
                   <select
@@ -207,7 +218,7 @@ export const BillsEditor: React.FC = () => {
                 <button onClick={() => setShowModal(false)} className="px-5 py-3 sm:py-2.5 text-gray-500 font-medium hover:bg-gray-100 rounded-xl">Cancel</button>
                 <button
                   onClick={handleSave}
-                  disabled={isSaving || !formDate || !formCategory || !formAmount || !formCurrency}
+                  disabled={isSaving || !formDate || !formName || !formCategory || !formAmount || !formCurrency}
                   className="px-5 py-3 sm:py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20"
                 >
                   {isSaving ? "Saving..." : "Save"}

@@ -28,12 +28,10 @@ export function useSubscriptionsEditor() {
 
   const createMutation = useMutation<Subscription, unknown, SubscriptionInput>({
     mutationFn: (data) => createSubscription(data),
-    onSuccess: () => invalidate.invalidateSubscriptions(),
   });
 
   const updateMutation = useMutation<Subscription, unknown, { id: number; data: SubscriptionInput }>({
     mutationFn: (payload) => updateSubscription(payload.id, payload.data),
-    onSuccess: () => invalidate.invalidateSubscriptions(),
   });
 
   const deleteMutation = useMutation<void, unknown, number>({
@@ -68,7 +66,7 @@ export function useSubscriptionsEditor() {
     setFormCurrency(getDefaultCurrencyCode());    setFormEffectiveFrom(new Date().toISOString().split('T')[0]);
     setFormEffectiveUntil("");
     setFormPlan("");
-    setFormBankAccountId(autoCalcEnabled ? defaultBankAccountId : null);
+    setFormBankAccountId(defaultBankAccountId);
     setShowModal(true);
   };
 
@@ -82,7 +80,7 @@ export function useSubscriptionsEditor() {
     setFormEffectiveFrom(sub.effectiveFrom.split('T')[0]);
     setFormEffectiveUntil(sub.effectiveUntil?.split('T')[0] || "");
     setFormPlan(sub.plan || "");
-    setFormBankAccountId((sub as Subscription & { bankAccountId?: number | null }).bankAccountId ?? (autoCalcEnabled ? defaultBankAccountId : null));
+    setFormBankAccountId((sub as Subscription & { bankAccountId?: number | null }).bankAccountId ?? defaultBankAccountId);
     setShowModal(true);
   };
 
@@ -126,12 +124,18 @@ export function useSubscriptionsEditor() {
 
     if (editingSubscription) {
       updateMutation.mutate({ id: editingSubscription.id, data }, {
-        onSuccess: () => setShowModal(false),
+        onSuccess: async () => {
+          await invalidate.invalidateSubscriptions();
+          setShowModal(false);
+        },
         onSettled: () => setIsSaving(false),
       });
     } else {
       createMutation.mutate(data, {
-        onSuccess: () => setShowModal(false),
+        onSuccess: async () => {
+          await invalidate.invalidateSubscriptions();
+          setShowModal(false);
+        },
         onSettled: () => setIsSaving(false),
       });
     }
@@ -171,7 +175,6 @@ export function useSubscriptionsEditor() {
     setFormPlan,
     formBankAccountId,
     setFormBankAccountId,
-    autoCalcEnabled,
     availableCurrencies,
   };
 }

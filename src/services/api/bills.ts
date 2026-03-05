@@ -11,6 +11,7 @@ export const getBills = async (limit = 100, cursor?: string) => {
 };
 
 export const saveBill = async (data: {
+  name: string;
   date: string;
   category: string;
   totalAmount: string;
@@ -25,6 +26,7 @@ export const saveBill = async (data: {
 export const updateBill = async (
   id: number,
   data: {
+    name: string;
     date: string;
     category: string;
     totalAmount: string;

@@ -31,14 +31,13 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ initialData, merchantId, rece
   const { data: allBankAccounts = [] } = useBankAccounts();
   const checkingAccounts = allBankAccounts.filter((a: { id: number; name: string; type: string }) => a.type === "checking");
 
-  const autoCalcEnabled = !!(serverSettings?.autoCalculateBalance && serverSettings?.defaultCheckingAccountId);
   const defaultBankAccountId = serverSettings?.defaultCheckingAccountId ?? null;
 
   const [date, setDate] = useState(initialData.date);
   const [currency, setCurrency] = useState(initialData.currency);
   const [items, setItems] = useState<ReceiptItem[]>(initialData.items);
   const [bankAccountId, setBankAccountId] = useState<number | null>(
-    initialData.bankAccountId ?? (autoCalcEnabled ? defaultBankAccountId : null)
+    initialData.bankAccountId ?? defaultBankAccountId
   );
 
   const calculatedTotal = items.reduce((acc, item) => acc + parseFloat(item.unitPrice) * item.quantity, 0);
@@ -170,7 +169,7 @@ const ReceiptForm: React.FC<ReceiptFormProps> = ({ initialData, merchantId, rece
             />
           </div>
         </div>
-        {autoCalcEnabled && (
+        {checkingAccounts.length > 0 && (
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Checking Account</label>

@@ -6,6 +6,7 @@ import type { Bill } from "../../../interfaces/bill-interface";
 import { getDefaultCurrencyCode } from "../../../constants/currency-constants";
 
 interface BillInput {
+  name: string;
   date: string;
   category: string;
   totalAmount: string;
@@ -34,12 +35,10 @@ export function useBillsEditor() {
 
   const saveMutation = useMutation<Bill, unknown, BillInput>({
     mutationFn: (data) => saveBill(data),
-    onSuccess: () => invalidate.invalidateBills(),
   });
 
   const updateMutation = useMutation<Bill, unknown, { id: number; data: BillInput }>({
     mutationFn: (payload) => updateBill(payload.id, payload.data),
-    onSuccess: () => invalidate.invalidateBills(),
   });
 
   const deleteMutation = useMutation<void, unknown, number>({
@@ -54,6 +53,7 @@ export function useBillsEditor() {
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
 
   const [formDate, setFormDate] = useState(new Date().toISOString().split('T')[0]);
+  const [formName, setFormName] = useState("");
   const [formCategory, setFormCategory] = useState("");
   const [formAmount, setFormAmount] = useState("");
   const [formCurrency, setFormCurrency] = useState(getDefaultCurrencyCode());
@@ -63,22 +63,24 @@ export function useBillsEditor() {
   const handleCreate = () => {
     setEditingBill(null);
     setFormDate(new Date().toISOString().split('T')[0]);
+    setFormName("");
     setFormCategory(categories.length > 0 ? categories[0].name : "");
     setFormAmount("");
     setFormCurrency(getDefaultCurrencyCode());
     setFormRecurrence("");
-    setFormBankAccountId(autoCalcEnabled ? defaultBankAccountId : null);
+    setFormBankAccountId(defaultBankAccountId);
     setShowModal(true);
   };
 
   const handleEdit = (bill: Bill) => {
     setEditingBill(bill);
     setFormDate(bill.date.split('T')[0]);
+    setFormName(bill.name);
     setFormCategory(bill.category);
     setFormAmount(bill.totalAmount);
     setFormCurrency(bill.currencyCode);
     setFormRecurrence(bill.recurrence || "");
-    setFormBankAccountId((bill as Bill & { bankAccountId?: number | null }).bankAccountId ?? (autoCalcEnabled ? defaultBankAccountId : null));
+    setFormBankAccountId((bill as Bill & { bankAccountId?: number | null }).bankAccountId ?? defaultBankAccountId);
     setShowModal(true);
   };
 
@@ -105,10 +107,11 @@ export function useBillsEditor() {
   const cancelDelete = () => setPendingDeleteId(null);
 
   const handleSave = async () => {
-    if (!formDate || !formCategory || !formAmount || !formCurrency) return;
+    if (!formDate || !formName || !formCategory || !formAmount || !formCurrency) return;
     setIsSaving(true);
     
     const data = {
+      name: formName,
       date: formDate,
       category: formCategory,
       totalAmount: formAmount,
@@ -119,12 +122,18 @@ export function useBillsEditor() {
 
     if (editingBill) {
       updateMutation.mutate({ id: editingBill.id, data }, {
-        onSuccess: () => setShowModal(false),
+        onSuccess: async () => {
+          await invalidate.invalidateBills();
+          setShowModal(false);
+        },
         onSettled: () => setIsSaving(false),
       });
     } else {
       saveMutation.mutate(data, {
-        onSuccess: () => setShowModal(false),
+        onSuccess: async () => {
+          await invalidate.invalidateBills();
+          setShowModal(false);
+        },
         onSettled: () => setIsSaving(false),
       });
     }
@@ -152,6 +161,8 @@ export function useBillsEditor() {
     cancelDelete,
     formDate,
     setFormDate,
+    formName,
+    setFormName,
     formCategory,
     setFormCategory,
     formAmount,
@@ -162,7 +173,6 @@ export function useBillsEditor() {
     setFormRecurrence,
     formBankAccountId,
     setFormBankAccountId,
-    autoCalcEnabled,
     defaultBankAccountId,
   };
 }

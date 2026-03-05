@@ -44,7 +44,6 @@ export const SubscriptionsEditor: React.FC = () => {
     setFormPlan,
     formBankAccountId,
     setFormBankAccountId,
-    autoCalcEnabled,
   } = useSubscriptionsEditor();
 
   const { data: allBankAccounts = [] } = useBankAccounts();
@@ -268,7 +267,7 @@ export const SubscriptionsEditor: React.FC = () => {
                 </div>
               </div>
 
-              {autoCalcEnabled && (
+              {checkingAccounts.length > 0 && (
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Checking Account</label>
                   <select
