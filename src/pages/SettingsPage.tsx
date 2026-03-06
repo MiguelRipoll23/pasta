@@ -9,9 +9,6 @@ import type { AppSettings } from "../interfaces/app-settings-interface";
 import { WebAuthnUtils } from "../utils/credential-utils";
 import { KeyRound, Loader2, Monitor, Moon, Sun, X } from "lucide-react";
 import { CurrencySelect } from "../components/common/CurrencySelect";
-import { useBankAccounts, useServerSettings, useInvalidateQueries } from "../hooks/useFinanceData";
-import { updateServerSettings } from "../services/api/settings";
-import { useMutation } from "@tanstack/react-query";
 
 export const SettingsPage: React.FC = () => {
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -24,25 +21,6 @@ export const SettingsPage: React.FC = () => {
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeySuccess, setPasskeySuccess] = useState(false);
   const [showPasskeyModal, setShowPasskeyModal] = useState(false);
-
-  const { data: allBankAccounts = [] } = useBankAccounts();
-  const checkingAccounts = allBankAccounts.filter((a: { id: number; name: string; type: string }) => a.type === "checking");
-  const { data: serverSettings } = useServerSettings();
-  const invalidate = useInvalidateQueries();
-
-  const settingsMutation = useMutation({
-    mutationFn: updateServerSettings,
-    onSuccess: () => invalidate.invalidateServerSettings(),
-  });
-
-  const handleDefaultAccountChange = (value: string) => {
-    const id = value === "" ? null : Number(value);
-    settingsMutation.mutate({ defaultCheckingAccountId: id });
-  };
-
-  const handleAutoCalculateToggle = (checked: boolean) => {
-    settingsMutation.mutate({ autoCalculateBalance: checked });
-  };
 
   useEffect(() => {
     saveSettings(settings);
@@ -156,54 +134,8 @@ export const SettingsPage: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-900 dark:text-white">Default Checking Account</label>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                Used to calculate your liquid balance from transactions.
-              </p>
-              <select
-                value={serverSettings?.defaultCheckingAccountId ?? ""}
-                onChange={(e) => handleDefaultAccountChange(e.target.value)}
-                disabled={settingsMutation.isPending}
-                className="max-w-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-gray-900 dark:text-white disabled:opacity-50"
-              >
-                <option value="">None</option>
-                {checkingAccounts.map((account: { id: number; name: string; type: string }) => (
-                  <option key={account.id} value={account.id}>{account.name}</option>
-                ))}
-              </select>
             </div>
-            <div className="flex items-center justify-between max-w-xs">
-              <div>
-                <label className="text-sm font-medium text-gray-900 dark:text-white">Auto-calculate Balance</label>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                  Compute balance from salary minus paid transactions.
-                </p>
-              </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={serverSettings?.autoCalculateBalance ?? true}
-                onClick={() => handleAutoCalculateToggle(!(serverSettings?.autoCalculateBalance ?? true))}
-                disabled={settingsMutation.isPending}
-                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 ${
-                  (serverSettings?.autoCalculateBalance ?? true) ? "bg-emerald-600" : "bg-gray-300 dark:bg-gray-600"
-                }`}
-              >
-                <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                    (serverSettings?.autoCalculateBalance ?? true) ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
-              </button>
-            </div>
-            {settingsMutation.isPending && (
-              <p className="text-xs text-gray-400 flex items-center gap-1">
-                <Loader2 className="w-3 h-3 animate-spin" /> Saving...
-              </p>
-            )}
-          </div>
-        </section>
+          </section>
 
         {/* Appearance */}
         <section>
@@ -391,3 +323,4 @@ export const SettingsPage: React.FC = () => {
     </div>
   );
 };
+

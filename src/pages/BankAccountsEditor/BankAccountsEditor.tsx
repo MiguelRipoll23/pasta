@@ -20,12 +20,12 @@ const InputModal: React.FC<InputModalProps> = ({
   label,
   placeholder,
   defaultValue = "",
-  defaultType = "checking",
+  defaultType,
   defaultTaxPercentage = "",
   isSaving = false,
 }) => {
   const [value, setValue] = useState(defaultValue);
-  const [typeValue, setTypeValue] = useState(defaultType || "checking");
+  const [typeValue, setTypeValue] = useState(defaultType || "");
   const [taxValue, setTaxValue] = useState(defaultTaxPercentage);
   const canSave = value.trim().length > 0 && typeValue.trim().length > 0;
 
@@ -137,7 +137,7 @@ export const BankAccountsEditor: React.FC = () => {
   const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null);
   const [isSavingAccount, setIsSavingAccount] = useState(false);
   const [formName, setFormName] = useState("");
-  const [formType, setFormType] = useState("checking");
+  const [formType, setFormType] = useState("");
   const [formTaxPercentage, setFormTaxPercentage] = useState("");
 
   // bank accounts loaded via useBankAccounts
@@ -145,7 +145,7 @@ export const BankAccountsEditor: React.FC = () => {
   const handleCreate = () => {
     setEditingAccount(null);
     setFormName("");
-    setFormType("checking");
+    setFormType("");
     setFormTaxPercentage("");
     setShowAccountModal(true);
   };
@@ -153,7 +153,7 @@ export const BankAccountsEditor: React.FC = () => {
   const handleEdit = (account: BankAccount) => {
     setEditingAccount(account);
     setFormName(account.name);
-    setFormType(account.type || "checking");
+    setFormType(account.type || "");
     setFormTaxPercentage(formatDecimalAsPercentageForInput(account.taxPercentage));
     setShowAccountModal(true);
   };

@@ -16,7 +16,6 @@ import { getRoboadvisorBalances } from '../services/api/roboadvisor';
 import { getRoboadvisorFunds } from '../services/api/roboadvisor';
 import { getMerchants, getReceipts as getMerchantReceipts } from '../services/api/merchants';
 import { getChatModels } from '../services/api/chat';
-import { getServerSettings } from '../services/api/settings';
 
 // Query keys for cache management
 export const queryKeys = {
@@ -52,8 +51,6 @@ export const queryKeys = {
     roboadvisorId ? ['roboadvisorFunds', roboadvisorId] : ['roboadvisorFunds'] as const,
 
   chatModels: ['chatModels'] as const,
-
-  serverSettings: ['serverSettings'] as const,
 
   dashboardKpis: ['dashboard', 'kpis'] as const,
   dashboardNetWorth: ['dashboard', 'netWorth'] as const,
@@ -267,15 +264,6 @@ export function useChatModels() {
   });
 }
 
-// Server Settings Hook
-export function useServerSettings() {
-  return useQuery({
-    queryKey: queryKeys.serverSettings,
-    queryFn: () => getServerSettings(),
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
-}
-
 // Cache invalidation utilities
 export function useInvalidateQueries() {
   const queryClient = useQueryClient();
@@ -313,8 +301,6 @@ export function useInvalidateQueries() {
       queryClient.invalidateQueries({ queryKey: queryKeys.roboadvisorFunds(roboadvisorId) }),
 
     invalidateChatModels: () => queryClient.invalidateQueries({ queryKey: queryKeys.chatModels }),
-
-    invalidateServerSettings: () => queryClient.invalidateQueries({ queryKey: queryKeys.serverSettings }),
 
     invalidateDashboardData: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.bankAccounts });

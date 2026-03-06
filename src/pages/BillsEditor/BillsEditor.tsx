@@ -10,7 +10,7 @@ import { clsx } from "clsx";
 import type { BillCategory } from "../../interfaces/bill-category-interface";
 import { DeleteConfirmModal } from "../../components/common/DeleteConfirmModal";
 import { CurrencySelect } from "../../components/common/CurrencySelect";
-import { useBankAccounts } from "../../hooks/useFinanceData";
+
 
 export const BillsEditor: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"history" | "categories">("history");
@@ -43,12 +43,7 @@ export const BillsEditor: React.FC = () => {
     setFormCurrency,
     formRecurrence,
     setFormRecurrence,
-    formBankAccountId,
-    setFormBankAccountId,
   } = useBillsEditor();
-
-  const { data: allBankAccounts = [] } = useBankAccounts();
-  const checkingAccounts = allBankAccounts.filter((a: { id: number; name: string; type: string }) => a.type === "checking");
 
   const calculateMonthlyTotal = () => {
     const now = new Date();
@@ -199,21 +194,7 @@ export const BillsEditor: React.FC = () => {
                   <option value="yearly">Yearly</option>
                 </select>
               </div>
-              {checkingAccounts.length > 0 && (
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Checking Account</label>
-                  <select
-                    value={formBankAccountId ?? ""}
-                    onChange={(e) => setFormBankAccountId(e.target.value === "" ? null : Number(e.target.value))}
-                    className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
-                  >
-                    <option value="">None</option>
-                    {checkingAccounts.map((account: { id: number; name: string; type: string }) => (
-                      <option key={account.id} value={account.id}>{account.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
+
               <div className="flex gap-3 justify-end mt-8">
                 <button onClick={() => setShowModal(false)} className="px-5 py-3 sm:py-2.5 text-gray-500 font-medium hover:bg-gray-100 rounded-xl">Cancel</button>
                 <button

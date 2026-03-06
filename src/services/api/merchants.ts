@@ -45,14 +45,12 @@ export const createReceipt = async (
   date: string,
   totalAmount: string,
   currencyCode: string,
-  bankAccountId?: number | null,
 ) => {
   const response = await api.post("/api/v1/receipts", {
     merchantId,
     receiptDate: date,
     totalAmount,
     currencyCode,
-    ...(bankAccountId != null ? { bankAccountId } : {}),
   });
   return response.data;
 };
@@ -62,13 +60,11 @@ export const updateReceipt = async (
   date: string,
   totalAmount: string,
   currencyCode: string,
-  bankAccountId?: number | null,
 ) => {
   const response = await api.patch(`/api/v1/receipts/${id}`, {
     receiptDate: date,
     totalAmount,
     currencyCode,
-    ...(bankAccountId != null ? { bankAccountId } : {}),
   });
   return response.data;
 };
