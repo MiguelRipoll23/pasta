@@ -220,7 +220,7 @@ export const RoboadvisorDetail: React.FC<RoboadvisorDetailProps> = ({ onEdit, on
                 setFormFundAssetClass(f.assetClass);
                 setFormFundRegion(f.region);
                 setFormFundCurrency(f.fundCurrencyCode);
-                setFormFundWeight(f.weight);
+                setFormFundWeight(String(f.weight));
                 setFormFundShareCount(f.shareCount);
                 setShowFundModal(true);
               }}

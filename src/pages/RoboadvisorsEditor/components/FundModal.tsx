@@ -30,7 +30,7 @@ export const FundModal: React.FC<{
     assetClass.trim().length > 0 &&
     region.trim().length > 0 &&
     currency.trim().length > 0 &&
-    weight.trim().length > 0;
+    weight && weight.trim().length > 0;
 
   return (
     <div className="fixed inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center p-4 z-50">
