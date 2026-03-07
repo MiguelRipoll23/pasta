@@ -111,7 +111,7 @@ export const useRoboadvisorDetail = () => {
     assetClass: string;
     region: string;
     fundCurrencyCode: string;
-    weight: string;
+    weight: number;
     shareCount?: number;
   };
 
@@ -193,7 +193,7 @@ export const useRoboadvisorDetail = () => {
         assetClass: formFundAssetClass,
         region: formFundRegion,
         fundCurrencyCode: formFundCurrency,
-        weight: formFundWeight,
+        weight: Number(formFundWeight),
         shareCount: formFundShareCount,
       };
       if (editingFund) {

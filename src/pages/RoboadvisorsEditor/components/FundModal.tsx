@@ -24,13 +24,15 @@ export const FundModal: React.FC<{
 }> = ({ show, onClose, isSaving, editing, name, onNameChange, isin, onIsinChange, assetClass, onAssetClassChange, region, onRegionChange, currency, onCurrencyChange, weight, onWeightChange, shareCount, onShareCountChange, onSave }) => {
   if (!show) return null;
 
+  const parsedWeight = Number(weight);
   const canSave =
     name.trim().length > 0 &&
     isin.trim().length > 0 &&
     assetClass.trim().length > 0 &&
     region.trim().length > 0 &&
     currency.trim().length > 0 &&
-    weight && weight.trim().length > 0;
+    weight.trim().length > 0 &&
+    Number.isFinite(parsedWeight);
 
   return (
     <div className="fixed inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center p-4 z-50">
