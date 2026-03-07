@@ -119,7 +119,7 @@ export const createRoboadvisorFund = async (data: {
   assetClass: string;
   region: string;
   fundCurrencyCode: string;
-  weight: string;
+  weight: number;
   shareCount?: number;
 }) => {
   const response = await api.post("/api/v1/bank-account-roboadvisor-funds", data);
@@ -134,7 +134,7 @@ export const updateRoboadvisorFund = async (
     assetClass?: string;
     region?: string;
     fundCurrencyCode?: string;
-    weight?: string;
+    weight?: number;
     shareCount?: number;
   },
 ) => {
