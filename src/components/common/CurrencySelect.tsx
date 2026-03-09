@@ -14,6 +14,7 @@ interface CurrencySelectProps {
   disabled?: boolean;
   availableCurrencies?: string[];
   className?: string;
+  placeholder?: string;
 }
 
 export const CurrencySelect: React.FC<CurrencySelectProps> = ({
@@ -22,6 +23,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
   disabled,
   availableCurrencies = [],
   className,
+  placeholder = "EUR",
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,7 +69,7 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
           onChange={handleInputChange}
           onFocus={() => setOpen(true)}
           disabled={disabled}
-          placeholder="EUR"
+          placeholder={placeholder}
           maxLength={3}
           autoComplete="off"
           className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-2.5 pr-8 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase"

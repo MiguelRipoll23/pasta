@@ -38,6 +38,7 @@ export const BalanceModal: React.FC<BalanceModalProps> = ({
             <CurrencySelect
               value={formBalanceCurrency}
               onChange={setFormBalanceCurrency}
+              placeholder=""
               disabled={isSavingBalance}
             />
           </div>

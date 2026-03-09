@@ -177,6 +177,7 @@ export const BillsEditor: React.FC = () => {
                   <CurrencySelect
                     value={formCurrency}
                     onChange={setFormCurrency}
+                    placeholder=""
                   />
                 </div>
               </div>

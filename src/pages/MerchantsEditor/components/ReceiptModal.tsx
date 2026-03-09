@@ -71,6 +71,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
             <CurrencySelect
               value={currency}
               onChange={onCurrencyChange}
+              placeholder=""
               disabled={isSaving}
               availableCurrencies={availableCurrencies}
             />

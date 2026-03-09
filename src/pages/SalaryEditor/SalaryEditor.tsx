@@ -343,6 +343,7 @@ export const SalaryEditor: React.FC = () => {
                 <CurrencySelect
                   value={formCurrency}
                   onChange={setFormCurrency}
+                  placeholder=""
                   disabled={isSaving}
                   availableCurrencies={availableCurrencies}
                 />

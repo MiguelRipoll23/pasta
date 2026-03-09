@@ -211,6 +211,7 @@ export const SubscriptionsEditor: React.FC = () => {
                   <CurrencySelect
                     value={formCurrency}
                     onChange={setFormCurrency}
+                    placeholder=""
                   />
                 </div>
               </div>
