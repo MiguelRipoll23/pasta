@@ -63,6 +63,7 @@ export const FundModal: React.FC<{
               <CurrencySelect
                 value={currency}
                 onChange={onCurrencyChange}
+                placeholder=""
                 disabled={isSaving}
               />
             </div>

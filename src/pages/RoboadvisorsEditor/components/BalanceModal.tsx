@@ -51,6 +51,7 @@ export const BalanceModal: React.FC<{
               <CurrencySelect
                 value={currency}
                 onChange={onCurrencyChange}
+                placeholder=""
                 disabled={isSaving}
               />
             </div>

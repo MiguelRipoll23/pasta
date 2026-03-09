@@ -85,6 +85,7 @@ export default function AssetModal({
               <CurrencySelect
                 value={formInvestedCurrency}
                 onChange={setFormInvestedCurrency}
+                placeholder=""
                 disabled={isSaving}
               />
             </div>
